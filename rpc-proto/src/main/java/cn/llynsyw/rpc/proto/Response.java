@@ -177,6 +177,7 @@ private static final long serialVersionUID = 0L;
      * @return The enum associated with the given numeric wire value.
      */
     public static Code forNumber(int value) {
+      /*状态码*/
       switch (value) {
         case 0: return RPC_OK;
         case 1: return RPC_NO_SERVICE;
