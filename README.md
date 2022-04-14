@@ -104,7 +104,7 @@ public class MyCalculator implements Calculator {
 ~~~java
 package cn.llynsyw.boot;
 
-import cn.llynsyw.server.RpcServer;
+import RpcServer;
 import cn.llynsyw.stub.Calculator;
 import cn.llynsyw.stub.impl.MyCalculator;
 
