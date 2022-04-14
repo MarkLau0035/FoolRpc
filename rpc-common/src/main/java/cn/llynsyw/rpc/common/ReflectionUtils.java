@@ -17,9 +17,10 @@ public class ReflectionUtils {
 
 
 	/**
+	 * 获取该类的所有公共方法
+	 *
+	 * @param clazz 具体类
 	 * @return java.lang.reflect.Method[]
-	 * @params [java.lang.Class]
-	 * @description TODO
 	 **/
 	public static Method[] getPublicMethods(Class clazz) {
 		/**/
@@ -36,9 +37,12 @@ public class ReflectionUtils {
 
 
 	/**
+	 * TODO
+	 *
+	 * @param obj    调用的对象
+	 * @param method 调用的方法
+	 * @param args   传入的实参
 	 * @return java.lang.Object
-	 * @params [java.lang.Object, java.lang.reflect.Method, java.lang.Object...]
-	 * @description TODO
 	 **/
 	public static Object invoke(Object obj, Method method, Object... args) {
 		try {
@@ -47,7 +51,6 @@ public class ReflectionUtils {
 			throw new IllegalStateException(e);
 		}
 	}
-
 
 
 }

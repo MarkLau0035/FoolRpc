@@ -8,6 +8,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @Description TODO
  * @Author luolinyuan
@@ -27,7 +29,8 @@ public class ServiceInvokerTest {
 		ServiceInstance sis = new ServiceInstance(new TestInterfaceImpl(), method);
 		byte[] bytes = ProtoUtils.objectToBytes(1);
 		Object o = ProtoUtils.bytesToObject(bytes);
-		Object invoke = serviceInvoker.invoke(sis, o);
-		System.out.println(invoke);
+		Object invokeResult = serviceInvoker.invoke(sis, o);
+		assertEquals(1,invokeResult);
+
 	}
 }
