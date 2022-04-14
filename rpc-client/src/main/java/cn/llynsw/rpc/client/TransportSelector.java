@@ -1,7 +1,7 @@
 package cn.llynsw.rpc.client;
 
-import cn.llynsyw.rpc.transport.Peer;
-import cn.llynsyw.rpc.transport.TransportClient;
+import cn.llynsyw.rpc.Peer;
+import cn.llynsyw.rpc.TransportClient;
 
 import java.util.List;
 

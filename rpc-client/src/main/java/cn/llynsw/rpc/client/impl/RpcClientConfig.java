@@ -1,9 +1,13 @@
 package cn.llynsw.rpc.client.impl;
 
 import cn.llynsw.rpc.client.TransportSelector;
-import cn.llynsyw.rpc.transport.Peer;
-import cn.llynsyw.rpc.transport.TransportClient;
-import cn.llynsyw.rpc.transport.impl.HttpTransportClient;
+import cn.llynsyw.rpc.Peer;
+import cn.llynsyw.rpc.TransportClient;
+import cn.llynsyw.rpc.impl.HttpTransportClient;
+import com.llynsyw.rpc.Decoder;
+import com.llynsyw.rpc.Encoder;
+import com.llynsyw.rpc.impl.JSONDecoder;
+import com.llynsyw.rpc.impl.JSONEncoder;
 import lombok.Data;
 
 import java.util.Arrays;
@@ -17,6 +21,8 @@ import java.util.List;
 @Data
 public class RpcClientConfig {
     private Class<? extends TransportClient> transportClass = HttpTransportClient.class;
+    private Class<? extends Encoder> encoderClass = JSONEncoder.class;
+    private Class<? extends Decoder> decoderClass = JSONDecoder.class;
     private Class<? extends TransportSelector> selectorClass =
             RandomTransportSelector.class;
     private int connectCount = 1;
