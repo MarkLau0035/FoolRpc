@@ -1,7 +1,9 @@
 package cn.llynsw.rpc.client.impl;
 
 import cn.llynsw.rpc.client.TransportSelector;
-import cn.llynsyw.rpc.common.ReflectionUtils;
+import cn.llynsyw.rpc.ReflectionUtils;
+import com.llynsyw.rpc.Decoder;
+import com.llynsyw.rpc.Encoder;
 
 import java.lang.reflect.Proxy;
 
@@ -12,6 +14,8 @@ import java.lang.reflect.Proxy;
  **/
 public class RpcClient {
     private RpcClientConfig config;
+    private Encoder encoder;
+    private Decoder decoder;
     private TransportSelector selector;
 
     public RpcClient() {
@@ -21,6 +25,8 @@ public class RpcClient {
     public RpcClient(RpcClientConfig config) {
         this.config = config;
 
+        this.encoder = ReflectionUtils.newInstance(this.config.getEncoderClass());
+        this.decoder = ReflectionUtils.newInstance(this.config.getDecoderClass());
         this.selector = ReflectionUtils.newInstance(this.config.getSelectorClass());
 
         this.selector.init(
@@ -33,7 +39,7 @@ public class RpcClient {
         return (T) Proxy.newProxyInstance(
                 getClass().getClassLoader(),
                 new Class[] {clazz},
-                new RemoteInvoker(clazz,selector)
+                new RemoteInvoker(clazz,encoder,decoder,selector)
         );
     }
 }
