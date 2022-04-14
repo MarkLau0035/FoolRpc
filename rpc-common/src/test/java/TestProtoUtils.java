@@ -1,5 +1,4 @@
 import cn.llynsyw.rpc.common.ProtoUtils;
-import cn.llynsyw.rpc.proto.Request;
 import org.junit.Test;
 
 import java.io.IOException;
