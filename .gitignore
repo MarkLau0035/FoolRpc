@@ -1,5 +1,4 @@
 .idea
 *.log
 target/
-test/
 .Ds_Store

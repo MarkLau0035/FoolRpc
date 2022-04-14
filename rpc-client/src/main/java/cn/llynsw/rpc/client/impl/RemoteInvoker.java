@@ -1,12 +1,10 @@
 package cn.llynsw.rpc.client.impl;
 
 import cn.llynsw.rpc.client.TransportSelector;
-import cn.llynsyw.rpc.Request;
-import cn.llynsyw.rpc.Response;
-import cn.llynsyw.rpc.ServiceDescriptor;
-import cn.llynsyw.rpc.TransportClient;
-import com.llynsyw.rpc.Decoder;
-import com.llynsyw.rpc.Encoder;
+import cn.llynsyw.rpc.common.ProtoUtils;
+import cn.llynsyw.rpc.proto.Request;
+import cn.llynsyw.rpc.proto.Response;
+import cn.llynsyw.rpc.transport.TransportClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -23,56 +21,65 @@ import java.lang.reflect.Method;
  **/
 @Slf4j
 public class RemoteInvoker implements InvocationHandler {
-    private Encoder encoder;
-    private Decoder decoder;
-    private TransportSelector selector;
-    private Class clazz;
+	private TransportSelector selector;
+	private Class clazz;
 
-    RemoteInvoker(Class clazz, Encoder encoder, Decoder decoder
-            , TransportSelector selector) {
-        this.clazz = clazz;
-        this.decoder = decoder;
-        this.encoder = encoder;
-        this.selector = selector;
-    }
+	/**
+	 * 构造方法
+	 *
+	 * @param clazz    访问哪个类
+	 * @param selector
+	 **/
+	RemoteInvoker(Class clazz, TransportSelector selector) {
+		this.clazz = clazz;
+		this.selector = selector;
+	}
 
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Request request = new Request();
-        request.setService(ServiceDescriptor.from(clazz, method));
-        request.setParameters(args);
+	/**
+	 * 执行
+	 *
+	 * @param proxy  代理对象
+	 * @param method 具体方法
+	 * @param args   具体参数
+	 * @return java.lang.Object
+	 **/
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws IOException, ClassNotFoundException {
+		/*生成Request*/
+		Request request = ProtoUtils.generateRequest(this.clazz, method, args);
+		/*执行并接收响应*/
+		Response resp = invokeRemote(request);
+		if (resp == null || resp.getCodeValue() != Response.Code.RPC_OK_VALUE) {
+			throw new IllegalStateException("fail to invoke remote:" + resp);
+		}
+		return ProtoUtils.bytesToObject(resp.getData().toByteArray());
+	}
 
-        Response resp = invokeRemote(request);
-        if (resp == null || resp.getCode() != 0) {
-            throw new IllegalStateException("fail to invoke remote:" + resp);
-        }
-        return resp.getData();
-    }
 
-    private Response invokeRemote(Request request) {
-        TransportClient client = null;
-        Response resp = null;
-        try {
-            client = selector.select();
-            byte[] outBytes = encoder.encode(request);
-            InputStream receive = client.write(new ByteArrayInputStream(outBytes));
+	private Response invokeRemote(Request request) {
+		TransportClient client = null;
+		Response resp = null;
+		try {
+			/*选择一个客户端*/
+			client = selector.select();
+			/*转为字节序列并发送*/
+			byte[] outBytes = request.toByteArray();
+			InputStream receive = client.write(new ByteArrayInputStream(outBytes));
+			/*读取响应序列并生成Response对象*/
+			byte[] inBytes = IOUtils.readFully(receive, receive.available());
+			resp = ProtoUtils.generateResponse(inBytes);
+		} catch (IOException e) {
+			/*记录并转发异常*/
+			log.warn(e.getMessage(), e);
+			String message = "RpcClient got error" + e.getClass() + " : " + e.getMessage();
+			resp = ProtoUtils.generateResponse(1, message);
+		} finally {
+			if (client != null) {
+				selector.release(client);
+			}
+		}
+		return resp;
+	}
 
-            byte[] inBytes = IOUtils.readFully(receive, receive.available());
-            resp = decoder.decode(inBytes,Response.class);
-        } catch (IOException e) {
-            log.warn(e.getMessage(),e);
-            resp = new Response();
-            resp.setCode(1);
-            resp.setMessage("RpcClient got error"
-                    + e.getClass()
-                    + " : " + e.getMessage()
-            );
-        } finally {
-            if (client != null) {
 
-                selector.release(client);
-            }
-        }
-        return resp;
-    }
 }
