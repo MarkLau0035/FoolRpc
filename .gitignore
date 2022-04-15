@@ -1,4 +1,14 @@
+### Example user template template
+### Example user template
+
+# IntelliJ project files
 .idea
-*.log
-target/
-.Ds_Store
+rpc-client/target/
+rpc-common/target/
+rpc-proto/target/
+rpc-server/target/
+rpc-transport/target/
+*.iml
+out
+gen
+

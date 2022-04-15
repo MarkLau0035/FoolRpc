@@ -1,0 +1,4 @@
+cn\llynsyw\rpc\server\TestInterface.class
+cn\llynsyw\rpc\server\ServerTest.class
+cn\llynsyw\rpc\server\ServiceInvokerTest.class
+cn\llynsyw\rpc\server\TestInterfaceImpl.class
