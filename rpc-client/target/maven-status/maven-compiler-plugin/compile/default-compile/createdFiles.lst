@@ -1,5 +1,0 @@
-cn\llynsw\rpc\client\impl\RpcClient.class
-cn\llynsw\rpc\client\impl\RandomTransportSelector.class
-cn\llynsw\rpc\client\TransportSelector.class
-cn\llynsw\rpc\client\impl\RpcClientConfig.class
-cn\llynsw\rpc\client\impl\RemoteInvoker.class
