@@ -1,4 +1,16 @@
-.idea
-*.log
+# Maven #
 target/
-.Ds_Store
+
+# IDEA #
+.idea/
+*.iml
+
+# Eclipse #
+.settings/
+.metadata/
+.classpath
+.project
+Servers/
+
+# Mac #
+.DS_Store
