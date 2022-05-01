@@ -1,0 +1,6 @@
+rpc:
+  registry:
+    zookeeper:
+      maxRetryTimes: 2222
+      peers:
+        - 'localhost:2181'

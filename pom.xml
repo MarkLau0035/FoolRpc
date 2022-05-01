@@ -6,14 +6,15 @@
 
     <groupId>cn.llynsyw</groupId>
     <artifactId>rpc</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>rpc-common</module>
-        <module>rpc-proto</module>
+        <module>rpc-protocol</module>
         <module>rpc-transport</module>
         <module>rpc-server</module>
         <module>rpc-client</module>
+        <module>rpc-registry</module>
     </modules>
 
     <dependencyManagement>
@@ -48,6 +49,27 @@
                 <artifactId>protobuf-java</artifactId>
                 <version>${proto.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <optional>true</optional>
+                <version>${springboot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -57,6 +79,17 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <version>${springboot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>${springboot.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -71,6 +104,9 @@
         <logback.version>1.2.3</logback.version>
         <proto.version>3.20.0</proto.version>
         <junit.version>4.12</junit.version>
+        <springboot.version>2.6.7</springboot.version>
+        <curator.version>5.1.0</curator.version>
+        <zookeeper.version>3.8.0</zookeeper.version>
     </properties>
 
     <build>

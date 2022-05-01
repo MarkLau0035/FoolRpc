@@ -1,9 +1,9 @@
 package cn.llynsw.rpc.client.impl;
 
 import cn.llynsw.rpc.client.TransportSelector;
-import cn.llynsyw.rpc.common.ProtoUtils;
-import cn.llynsyw.rpc.proto.Request;
-import cn.llynsyw.rpc.proto.Response;
+import cn.llynsyw.rpc.protocol.util.ProtoUtils;
+import cn.llynsyw.rpc.protocol.Request;
+import cn.llynsyw.rpc.protocol.Response;
 import cn.llynsyw.rpc.transport.TransportClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -15,22 +15,16 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 /**
- * @Description 调用远程服务的代理类
- * @Author luolinyuan
- * @Date 2022/3/30
+ * 调用远程服务的代理类
+ * @author luolinyuan
+ * @date 2022/3/30
  **/
 @Slf4j
 public class RemoteInvoker implements InvocationHandler {
 	private TransportSelector selector;
 	private Class clazz;
 
-	/**
-	 * 构造方法
-	 *
-	 * @param clazz    访问哪个类
-	 * @param selector
-	 **/
-	RemoteInvoker(Class clazz, TransportSelector selector) {
+	RemoteInvoker(Class clazz,TransportSelector selector) {
 		this.clazz = clazz;
 		this.selector = selector;
 	}
@@ -60,7 +54,7 @@ public class RemoteInvoker implements InvocationHandler {
 		TransportClient client = null;
 		Response resp = null;
 		try {
-			/*选择一个客户端*/
+			/*选择一个结点*/
 			client = selector.select();
 			/*转为字节序列并发送*/
 			byte[] outBytes = request.toByteArray();

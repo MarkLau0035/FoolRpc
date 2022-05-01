@@ -5,7 +5,7 @@
     <parent>
         <artifactId>rpc</artifactId>
         <groupId>cn.llynsyw</groupId>
-        <version>1.1-SNAPSHOT</version>
+        <version>1.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,11 +26,6 @@
             <artifactId>jetty-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.llynsyw</groupId>
-            <artifactId>rpc-proto</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -41,6 +36,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.llynsyw</groupId>
+            <artifactId>rpc-common</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
