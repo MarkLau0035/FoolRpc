@@ -1,9 +1,9 @@
 package cn.llynsyw.rpc.transport;
 
 /**
- * @Description 1.启动、监听 2.接受请求 3.关闭监听
- * @Author luolinyuan
- * @Date 2022/3/29
+ * 1.启动、监听 2.接受请求 3.关闭监听
+ * @author luolinyuan
+ * @date 2022/3/29
  **/
 public interface TransportServer {
 	/**

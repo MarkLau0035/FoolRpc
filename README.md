@@ -82,9 +82,9 @@ package cn.llynsyw.stub.impl;
 import cn.llynsyw.stub.Calculator;
 
 /**
- * @Description TODO
- * @Author luolinyuan
- * @Date 2022/4/11
+ * TODO
+ * @author luolinyuan
+ * @date 2022/4/11
  **/
 public class MyCalculator implements Calculator {
 	@Override
@@ -109,9 +109,9 @@ import cn.llynsyw.stub.Calculator;
 import cn.llynsyw.stub.impl.MyCalculator;
 
 /**
- * @Description rpc服务启动类
- * @Author luolinyuan
- * @Date 2022/4/11
+ * rpc服务启动类
+ * @author luolinyuan
+ * @date 2022/4/11
  **/
 public class Server {
 	public static void main(String[] args) {
@@ -136,13 +136,13 @@ public class Server {
 ```java
 package cn.llynsyw.boot;
 
-import cn.llynsw.rpc.client.impl.RpcClient;
+import cn.llynsw.rpc.client.impl.RpcClientDirectConnectImpl;
 import cn.llynsyw.stub.Calculator;
 
 /**
- * @Description TODO
- * @Author luolinyuan
- * @Date 2022/4/11
+ * TODO
+ * @author luolinyuan
+ * @date 2022/4/11
  **/
 public class Client {
 	public static void main(String[] args) {

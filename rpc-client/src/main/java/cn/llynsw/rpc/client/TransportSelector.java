@@ -1,39 +1,44 @@
 package cn.llynsw.rpc.client;
 
-import cn.llynsyw.rpc.transport.Peer;
 import cn.llynsyw.rpc.transport.TransportClient;
 
 import java.util.List;
 
 /**
- * @Description 选择哪个server连接
- * @Author luolinyuan
- * @Date 2022/3/30
+ * 选择哪个server连接
+ *
+ * @author luolinyuan
+ * @date 2022/3/30
  **/
 public interface TransportSelector {
 
 
-    /**
-     *@Description 初始化selector
-     * @param peers 可以连接的server端点信息
-     * @param count 表示client与server建立多少个连接
-     * @param clazz client实现class
-     * @return void
-      **/
-    void init(List<Peer> peers, int count, Class<? extends TransportClient> clazz);
-    /**
-     * @param
-     * @return cn.llynsyw.rpc.TransportClient
-     * @description TODO
-      **/
-    TransportClient select ();
+	/**
+	 * 初始化selector
+	 *
+	 * @param urls  链接提供了该服务的sever端
+	 * @param count 表示client与server建立多少个连接
+	 * @param clientNetwork client实现类
+	 **/
+	void init(List<String> urls, int count, TransportClient clientNetwork);
 
-   /**
-    * @param client
-    * @description TODO
-     **/
-    void release(TransportClient client);
+	/**
+	 * 选出一个rpc客户端使用
+	 *
+	 **/
+	TransportClient select();
+
+	/**
+	 * 归还rpc客户端
+	 *
+	 * @param client 被归还的客户端
+	 **/
+	void release(TransportClient client);
 
 
-    void close();
+	/**
+	 * 关闭所有的rpc客户端
+	 *
+	 **/
+	void close();
 }

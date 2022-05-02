@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,56 +16,62 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * @Description TODO
- * @Author luolinyuan
- * @Date 2022/3/29
+ * TODO
+ *
+ * @author luolinyuan
+ * @date 2022/3/29
  **/
 @Slf4j
+@Component
 public class HttpTransportSever implements TransportServer {
-    private RequestHandler handler;
-    private Server server;
-    @Override
-    public void start() {
-        try {
-            server.start();
-            server.join();
-        } catch (Exception e) {
-            log.error(e.getMessage(),e);
-        }
-    }
+	private RequestHandler handler;
+	private Server server;
 
-    @Override
-    public void init(int port, RequestHandler handler) {
-        this.handler = handler;
-        this.server = new Server(port);
+	@Override
+	public void start() {
+		/*新增线程启动网络监听*/
+		new Thread(() -> {
+			try {
+				server.start();
+				server.join();
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+		}).start();
+	}
 
-        ServletContextHandler ctx = new ServletContextHandler();
-        server.setHandler(ctx);
+	@Override
+	public void init(int port, RequestHandler handler) {
+		this.handler = handler;
+		this.server = new Server(port);
 
-        ServletHolder holder = new ServletHolder(new RequestServlet());
-        ctx.addServlet(holder,"/*");
-    }
+		ServletContextHandler ctx = new ServletContextHandler();
+		server.setHandler(ctx);
 
-    @Override
-    public void stop() {
-        if(server != null ){
-            try {
-                server.stop();
-            } catch (Exception e) {
-                log.error(e.getMessage(),e);
-            }
-        }
-    }
+		ServletHolder holder = new ServletHolder(new RequestServlet());
+		ctx.addServlet(holder, "/*");
+	}
 
-    class RequestServlet extends HttpServlet {
-        @Override
-        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            ServletInputStream inputStream = req.getInputStream();
-            OutputStream outputStream = resp.getOutputStream();
+	@Override
+	public void stop() {
+		if (server != null) {
+			try {
+				server.stop();
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
 
-            if(handler != null){
-                handler.onRequestSteam(inputStream,outputStream);
-            }
-        }
-    }
+	class RequestServlet extends HttpServlet {
+		@Override
+		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+			ServletInputStream inputStream = req.getInputStream();
+			OutputStream outputStream = resp.getOutputStream();
+
+			if (handler != null) {
+				handler.onRequestSteam(inputStream, outputStream);
+			}
+		}
+	}
 }
