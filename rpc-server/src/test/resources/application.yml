@@ -1,8 +1,11 @@
 rpc:
+  connectMod: registry
   registry:
     zookeeper:
       peers:
+        # - 'localhost:2181'
         - '47.106.221.6:9990'
-        - '111.67.192.184:9990'
-        - '111.67.202.104:9990'
-        - '111.67.200.204:9990'
+
+  server:
+    host: localhost
+    port: 11111

@@ -3,11 +3,14 @@ package cn.llynsw.rpc.client.impl;
 import cn.llynsw.rpc.client.RpcClient;
 import cn.llynsw.rpc.client.TransportSelector;
 import cn.llynsw.rpc.client.config.RpcClientConfig;
+import cn.llynsw.rpc.client.configuration.SelectConfiguration;
 import cn.llynsyw.rpc.registry.zookeeper.ZkCuratorClient;
 import cn.llynsyw.rpc.transport.TransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +37,13 @@ public class RpcClientWithsRegistryImpl implements RpcClient {
 	private TransportClient clientNetwork;
 
 	@Autowired
-	public RpcClientWithsRegistryImpl(RpcClientConfig config, ZkCuratorClient zkClient, TransportClient clientNetwork) {
+	private ApplicationContext context;
+
+	@Autowired
+	public RpcClientWithsRegistryImpl(RpcClientConfig config, ZkCuratorClient zkClient) {
 		this.config = config;
 		this.zkClient = zkClient;
-		this.clientNetwork = clientNetwork;
+
 	}
 
 	@Override
@@ -58,9 +64,15 @@ public class RpcClientWithsRegistryImpl implements RpcClient {
 	public void getProviders(Class clazz) {
 		List<String> children = zkClient.getChildren("/" + clazz.getName() + "/provider");
 		if (children != null && !children.isEmpty()) {
-			selector = new RandomTransportSelector();
-			selector.init(children, config.getConnectCount(), clientNetwork);
-			setSelector(selector);
+			//selector = new RandomTransportSelector();
+			selector = context.getBean(TransportSelector.class);
+			for (String url:
+				 children) {
+				clientNetwork = context.getBean(TransportClient.class);
+				selector.init(url, config.getConnectCount(), clientNetwork);
+			}
+
+			//setSelector(selector);
 		} else {
 			throw new IllegalStateException("there is not exist such service");
 		}

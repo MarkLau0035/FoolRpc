@@ -21,6 +21,7 @@ public interface TransportSelector {
 	 * @param clientNetwork client实现类
 	 **/
 	void init(List<String> urls, int count, TransportClient clientNetwork);
+	void init(String urls, int count, TransportClient clientNetwork);
 
 	/**
 	 * 选出一个rpc客户端使用

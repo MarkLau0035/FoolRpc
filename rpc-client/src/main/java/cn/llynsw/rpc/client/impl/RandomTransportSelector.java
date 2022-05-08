@@ -16,7 +16,7 @@ import java.util.Random;
  * @date 2022/3/30
  **/
 @Slf4j
-@Component
+//@Component
 public class RandomTransportSelector implements TransportSelector {
 	/**
 	 * 表示已经连接好的client
@@ -38,7 +38,15 @@ public class RandomTransportSelector implements TransportSelector {
 			log.info("connect server  : {}", url);
 		}
 	}
-
+	@Override
+	public synchronized void init(String url, int count, TransportClient clientNetwork) {
+		count = Math.max(count, 1);
+		for (int i = 0; i < count; i++) {
+			clientNetwork.connect(url);
+			clients.add(clientNetwork);
+			log.info("connect server  : {}", url);
+		}
+	}
 	@Override
 	public synchronized TransportClient select() {
 		int i = new Random().nextInt(clients.size());
