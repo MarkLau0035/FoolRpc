@@ -22,7 +22,9 @@ public class RpcClientConfig {
 	 * 从配置文件读入连接个数 默认为1
 	 **/
 	private int connectCount = 1;
-
+	/**
+	 * 直连服务地址
+	 */
 	private List<String> urls;
 
 }

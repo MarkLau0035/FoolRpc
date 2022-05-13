@@ -5,6 +5,7 @@ import cn.llynsyw.rpc.server.RpcServer;
 import cn.llynsyw.rpc.server.config.RpcServerConfig;
 import cn.llynsyw.rpc.transport.RequestHandler;
 import cn.llynsyw.rpc.transport.TransportServer;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -51,7 +52,7 @@ public class RpcServerImpl implements RpcServer {
 		this.handler = handler;
 	}
 
-	private RpcServerImpl() {}
+	public RpcServerImpl() {}
 
 	@Override
 	public <T> void register(Class<T> interfaceClass, T bean) {

@@ -2,6 +2,7 @@ package cn.llynsyw.rpc.server.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 
@@ -13,17 +14,18 @@ import org.springframework.stereotype.Component;
  **/
 @Data
 @Component
+@ConfigurationProperties(prefix = "rpc.server")
 public class RpcServerConfig {
 
 	/**
-	  * 服务发布的端口 默认8081
+	  * 服务发布的端口
 	    **/
-	@Value(value = "${rpc.server.port:8081}")
+	//@Value(value = "${rpc.server.port:8081}")
 	private int port;
 
 	/**
-	 * 服务的域名 默认为localhost
+	 * 服务的域名
 	  **/
-	@Value(value ="${rpc.server.host:localhost}")
+	//@Value(value ="${rpc.server.host:localhost}")
 	private String host;
 }
