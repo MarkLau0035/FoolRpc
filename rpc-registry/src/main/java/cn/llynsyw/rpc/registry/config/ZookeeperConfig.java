@@ -21,7 +21,9 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(prefix = "rpc",name = "connectMod",havingValue = "registry")
 public class ZookeeperConfig {
 
-	//zookeeper服务结点
+	/**
+	 * 	zookeeper服务结点
+	 */
 	private List<String> peers;
 
 	//定义失败重试次数
