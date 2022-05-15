@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!--
+        配置文件格式通配，可以在里面加文字描述，调整位置顺序等等
+        %-10level 日志级别
+        %d{yyyy-MM-dd HH:mm:ss.SSS} 日期
+        %c 当前类全限定名
+        %M 当前执行日志方法
+        %L 行号
+        %thread 线程名
+        %m,%msg 信息
+        %n 换行
+    -->
+    <property name="fileFormat" value="%d{yyyy-MM-dd HH:mm:ss.SSS}  %-5level  [%thread] %c-%M: %msg%n"/>
+
+    <!--文件地址通配-->
+    <property name="logDir" value="../RpcLog/serverLog"/>
+
+    <!--文件输出-->
+    <!--
+    每天生成日志文件,文件大小超过50则新生成一个文件，同时将旧文件按${LOG_HOME}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip格式压缩，文件保存30天
+     -->
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logDir}/rpcLog.log</file> <!-- 日志名称 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/logs/aa.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>  <!-- 日志文件过大会使的编辑器打开非常慢，因此设置日志最大50MB -->
+            <maxHistory>30</maxHistory>  <!-- 保存30天 -->
+            <totalSizeCap>10GB</totalSizeCap>  <!-- 总日志大小 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${fileFormat}</pattern>
+        </encoder>
+        <!-- 过滤器，可以过滤掉不符合条件的日志，INFO及以上的日志被处理，其它的拒绝 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--控制台输出-->
+    <appender name ="consoleAppender" class ="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${fileFormat}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+    <logger name="org.apache.zookeeper" level="ERROR" />
+    <logger name="org.apache.curator" level="ERROR" />
+
+
+    <!--
+        日志记录器
+        levele:日志级别
+    -->
+    <root level="info">
+        <appender-ref ref="consoleAppender"/>
+        <appender-ref ref="fileAppender"/>
+    </root>
+</configuration>
