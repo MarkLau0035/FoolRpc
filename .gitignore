@@ -1,5 +1,6 @@
 .idea
 *.log
+logs
 target/
 .Ds_Store
 *.iml

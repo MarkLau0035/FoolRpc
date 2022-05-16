@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="false">
+    <property name="ApplicationName" value="FoolRpc"/>
+
+    <contextName>${ApplicationName}</contextName>
+
+
+    <property name="info_format" value="%d{HH:mm:ss.SSS} %magenta([%thread]) |-%highlight(%-5level) %cyan(%logger{15}) - %green(%msg) %n"/>
+
+    <property name="error_format" value="%d{HH:mm:ss.SSS} %magenta([%thread]) |-%highlight(%-5level) %cyan(%logger{15}) caused by: %method:%L - %boldRed(%msg) %n%red(%caller{5}) %n"/>
+    <property name="log.path" value="../logs/FoolRpc/client"/>
+
+
+    <appender name="STD-INFO-OUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${info_format}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STD-ERROR-OUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${error_format}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE-INFO-OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/info.log</file>
+        <!--只处理INFO 级别日志-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+        <encoder>
+            <pattern>${info_format}</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/info.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- 保存30天 -->
+            <maxHistory>30</maxHistory>
+            <!-- 总日志大小 -->
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="FILE-ERROR-OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${error_format}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/error.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 下面配置一些第三方包的日志过滤级别，用于避免刷屏 -->
+    <logger name="org.apache.zookeeper" level="ERROR"/>
+    <logger name="org.apache.curator" level="ERROR"/>
+
+    <root level="INFO">
+        <appender-ref ref="STD-INFO-OUT" />
+        <appender-ref ref="STD-ERROR-OUT"/>
+        <appender-ref ref="FILE-INFO-OUT"/>
+        <appender-ref ref="FILE-ERROR-OUT"/>
+    </root>
+</configuration>
