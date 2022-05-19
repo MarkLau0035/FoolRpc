@@ -1,6 +1,6 @@
 rpc:
   registry:
     zookeeper:
+      maxRetryTimes: 2222
       peers:
-        - '47.106.221.6:9990'
-  connect-mod: registry
+        - 'localhost:2181'
