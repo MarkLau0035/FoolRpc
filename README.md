@@ -39,7 +39,7 @@ success代表成功装入本地仓库，为进一步确认可以在本地仓库(
 ```xml
  <dependencies>
         <dependency>
-            <groupId>cn.llynsyw</groupId>
+            <groupId>com.FoolRpc</groupId>
             <artifactId>rpc-server</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -51,7 +51,7 @@ success代表成功装入本地仓库，为进一步确认可以在本地仓库(
 ```xml
 <dependencies>
         <dependency>
-            <groupId>cn.llynsyw</groupId>
+            <groupId>com.FoolRpc</groupId>
             <artifactId>rpc-client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
@@ -63,7 +63,7 @@ success代表成功装入本地仓库，为进一步确认可以在本地仓库(
 下面就可以开始使用该rpc框架了，比如现在定义一个计算器服务
 
 ```java
-package cn.llynsyw.stub;
+package com.FoolRpc.stub;
 
 public interface Calculator {
 	
@@ -77,9 +77,9 @@ public interface Calculator {
 相应的给出实现类
 
 ```java
-package cn.llynsyw.stub.impl;
+package com.FoolRpc.stub.impl;
 
-import cn.llynsyw.stub.Calculator;
+import com.FoolRpc.stub.Calculator;
 
 /**
  * TODO
@@ -102,11 +102,11 @@ public class MyCalculator implements Calculator {
 然后就是将这个服务注册到rpc服务端中
 
 ~~~java
-package cn.llynsyw.boot;
+package com.FoolRpc.boot;
 
 import RpcServer;
-import cn.llynsyw.stub.Calculator;
-import cn.llynsyw.stub.impl.MyCalculator;
+import com.FoolRpc.stub.Calculator;
+import com.FoolRpc.stub.impl.MyCalculator;
 
 /**
  * rpc服务启动类
@@ -134,10 +134,10 @@ public class Server {
 而在客户端中，因为需要确定需要调用什么服务这个服务，所以同样需要有一个这样Calculator的接口，而且其所在的包名路径必须与服务端的包路径一直，这个接口就可以称为客户端的一个服务存根，在这里直接将Calculator复制到相应包下即可，然后模拟一个client进行调用
 
 ```java
-package cn.llynsyw.boot;
+package com.FoolRpc.boot;
 
 import cn.llynsw.rpc.client.impl.RpcClientDirectConnectImpl;
-import cn.llynsyw.stub.Calculator;
+import com.FoolRpc.stub.Calculator;
 
 /**
  * TODO

@@ -4,8 +4,9 @@ package stub.impl;
 import stub.Calculator;
 
 /**
- * @description TODO
- * @Author luolinyuan
+ * MyCalculator
+ *
+ * @author luolinyuan
  * @date 2022/4/11
  **/
 public class MyCalculator implements Calculator {
