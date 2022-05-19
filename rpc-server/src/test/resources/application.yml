@@ -7,5 +7,5 @@ rpc:
         - '47.106.221.6:9990'
 
   server:
-    ip: localhost
+    host: localhost
     port: 11111
