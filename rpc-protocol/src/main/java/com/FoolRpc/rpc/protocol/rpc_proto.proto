@@ -1,0 +1,41 @@
+syntax = "proto3";
+package  protocol;
+
+option java_multiple_files = true;
+option java_package = "com.FoolRpc.rpc.protocol";
+
+message ServiceDescriptor {
+  /*访问哪个类*/
+  string clazz = 1;
+  /*方法名称*/
+  string methodName = 2;
+  /*返回值类型*/
+  string returnType = 3;
+  /*参数类型 可多个*/
+  repeated string parameterType = 4;
+}
+
+message Request {
+  /*服务描述符*/
+  ServiceDescriptor serviceDescriptor = 1;
+  /*具体参数列表*/
+  repeated bytes parameter = 2;
+}
+
+
+message Response {
+  /*状态码*/
+  enum Code
+  {
+    RPC_OK = 0;
+    RPC_NO_SERVICE = 1;
+    RPC_NO_METHOD = 2;
+    RPC_INVALID_REQUEST = 3;
+    RPC_INVALID_RESPONSE = 4;
+  }
+  Code code = 1;
+  /*具体错误信息*/
+  string message = 2;
+  /*返回的数据*/
+  bytes data = 3;
+}
