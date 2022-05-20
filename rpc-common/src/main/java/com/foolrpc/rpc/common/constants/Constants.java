@@ -20,7 +20,7 @@ public interface Constants {
 
 	int ZOOKEEPER_SESSION_TIME_OUT = 60 * 1000;
 
-	int ZOOKEEPER_CONNECTION_TIMEOUT_MS = 3 * 1000;
+	int ZOOKEEPER_CONNECTION_TIMEOUT_MS = 20 * 1000;
 
 	Charset CHARSET = StandardCharsets.UTF_8;
 

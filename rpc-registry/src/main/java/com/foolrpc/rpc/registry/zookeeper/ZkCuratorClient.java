@@ -56,7 +56,7 @@ public class ZkCuratorClient {
 			client.start();
 			boolean connected = client.blockUntilConnected(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
 			if (!connected) {
-				throw new IllegalStateException("zookeeper try to connect fail");
+				throw new IllegalStateException("zookeeper try to connect fail.Try to increase the zookeeper connection timeout");
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e.getMessage(), e);
