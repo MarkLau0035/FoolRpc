@@ -6,17 +6,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.CuratorCache;
+import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,14 +31,18 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 @Component
-@Scope("prototype")
 @ConditionalOnBean(ZookeeperConfig.class)
 public class ZkCuratorClient {
+
+	private final Map<String, CuratorCache> nodeCacheMap = new ConcurrentHashMap<>();
 
 	private CuratorFramework client;
 
 	private static final Charset CHARSET = Constants.CHARSET;
 
+	public CuratorFramework getClient() {
+		return client;
+	}
 
 	@Autowired
 	public ZkCuratorClient(ZookeeperConfig config) {
@@ -56,7 +64,8 @@ public class ZkCuratorClient {
 			client.start();
 			boolean connected = client.blockUntilConnected(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
 			if (!connected) {
-				throw new IllegalStateException("zookeeper try to connect fail.Try to increase the zookeeper connection timeout");
+				throw new IllegalStateException("zookeeper try to connect fail.Try to increase the zookeeper " +
+						"connection timeout");
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e.getMessage(), e);
@@ -202,6 +211,17 @@ public class ZkCuratorClient {
 	}
 
 
+	public long getNodeCreatTimestamp(String path) {
+		Stat stat = new Stat();
+		try {
+			client.getData().storingStatIn(stat).forPath(path);
+			return stat.getCtime();
+		} catch (Exception e) {
+			throw new IllegalStateException(e.getMessage(), e);
+		}
+	}
+
+
 	public List<String> getChildren(String path) {
 		try {
 			return client.getChildren().forPath(path);
@@ -245,58 +265,15 @@ public class ZkCuratorClient {
 		return null;
 	}
 
-/*
-	服务发现相关 待实现
-	public CuratorWatcherImpl createTargetChildListener(String path, ChildListener listener) {
-		return new CuratorWatcherImpl(client, listener, path);
-	}
 
-	public List<String> addTargetChildListener(String path, CuratorWatcherImpl listener) {
-		try {
-			return client.getChildren().usingWatcher(listener).forPath(path);
-		} catch (KeeperException.NoNodeException e) {
-			return null;
-		} catch (Exception e) {
-			throw new IllegalStateException(e.getMessage(), e);
+	public void subscribeOnChildren(String path, NotifyTarget target) {
+		CuratorCache cache = CuratorCache.build(this.client, path);
+		/*等于null表示已经绑定过Listener*/
+		if (nodeCacheMap.putIfAbsent(path, cache) != null) {
+			return;
 		}
+		cache.start();
+		cache.listenable().addListener(CuratorCacheListener.builder().forPathChildrenCache(path, client,
+				new ProvidersListener(target)).build());
 	}
-
-	public NodeCacheListenerImpl createTargetDataListener(String path, DataListener listener) {
-		return new NodeCacheListenerImpl(client, listener, path);
-	}
-
-	protected void addTargetDataListener(String path, NodeCacheListenerImpl nodeCacheListener) {
-		this.addTargetDataListener(path, nodeCacheListener, null);
-	}
-
-	protected void addTargetDataListener(String path, NodeCacheListenerImpl nodeCacheListener, Executor executor) {
-		try {
-			NodeCache nodeCache = new NodeCache(client, path);
-			if (nodeCacheListener.nodeCacheMap.putIfAbsent(path, nodeCache) != null) {
-				return;
-			}
-			if (executor == null) {
-				nodeCache.getListenable().addListener(nodeCacheListener);
-			} else {
-				nodeCache.getListenable().addListener(nodeCacheListener, executor);
-			}
-
-			nodeCache.start();
-		} catch (Exception e) {
-			throw new IllegalStateException("Add nodeCache listener for path:" + path, e);
-		}
-	}
-
-	protected void removeTargetDataListener(String path, NodeCacheListenerImpl nodeCacheListener) {
-		NodeCache nodeCache = NodeCacheListenerImpl.nodeCacheMap.get(path);
-		if (nodeCache != null) {
-			nodeCache.getListenable().removeListener(nodeCacheListener);
-		}
-		nodeCacheListener.dataListener = null;
-	}
-
-	public void removeTargetChildListener(String path, CuratorWatcherImpl listener) {
-		listener.unwatch();
-	}
-*/
 }

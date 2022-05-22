@@ -5,9 +5,7 @@ import com.foolrpc.rpc.client.TransportSelector;
 import com.foolrpc.rpc.client.config.RpcClientConfig;
 import com.foolrpc.rpc.common.constants.CommonConfig;
 import com.foolrpc.rpc.common.constants.ConnectMod;
-import com.foolrpc.rpc.common.exception.DoNotExistServerException;
 import com.foolrpc.rpc.registry.zookeeper.ZkCuratorClient;
-import com.foolrpc.rpc.transport.TransportClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,7 +13,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,23 +66,25 @@ public class RpcClientImpl implements RpcClient {
 		}
 		TransportSelector selector = getProviders(clazz.getName());
 		T proxyInstance = (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{clazz},
-				new RemoteInvoker(clazz,selector));
+				new RemoteInvoker(clazz, selector));
 		proxyCaches.put(clazz, proxyInstance);
 		return proxyInstance;
 	}
 
 	TransportSelector getProviders(String clazzName) {
 		TransportSelector selector = context.getBean(TransportSelector.class);
-		List<String> urlList;
-		urlList = (commonConfig.getConnectMod() == ConnectMod.DIRECT) ? getUrlListFromConfig() :
-				getUrlListFromRegistry(clazzName);
-		List<TransportClient> clientList = new ArrayList<>();
-		for (String url : urlList) {
-			TransportClient netClient = context.getBean(TransportClient.class);
-			netClient.setUrl(url);
-			clientList.add(netClient);
+		List<String> urlList = null;
+		if (commonConfig.getConnectMod() == ConnectMod.DIRECT) {
+			urlList = getUrlListFromConfig();
+			selector.init(urlList);
+		} else if (commonConfig.getConnectMod() == ConnectMod.REGISTRY) {
+			String znodePath = "/" + clazzName + "/provider";
+			urlList = getUrlListFromRegistry(znodePath);
+			//先进行初始化
+			selector.init(urlList);
+			//在进行绑定观察
+			zkClient.subscribeOnChildren(znodePath, selector);
 		}
-		selector.init(clientList);
 		return selector;
 	}
 
@@ -98,14 +97,19 @@ public class RpcClientImpl implements RpcClient {
 		}
 	}
 
-	List<String> getUrlListFromRegistry(String clazzName) {
-		String znodePath = "/" + clazzName + "/provider";
-		List<String> children;
-		if (this.zkClient != null && !(children = zkClient.getChildren(znodePath)).isEmpty()) {
-			return children;
+	List<String> getUrlListFromRegistry(String znodePath) {
+		if (this.zkClient != null) {
+			List<String> children;
+			if ((children = this.zkClient.getChildren(znodePath)) != null && !children.isEmpty()) {
+				return children;
+
+			} else {
+				throw new IllegalStateException("there is no such service for "
+						+ znodePath.substring(1, znodePath.indexOf("/", 1))
+						+ " does exist");
+			}
 		} else {
-			throw new DoNotExistServerException("Zookeeper Client's initialize failure " +
-					"or there is not such service exist");
+			throw new IllegalStateException("Zookeeper Client's initialize failure ");
 		}
 	}
 }

@@ -30,6 +30,11 @@ public class HttpTransportClient implements TransportClient {
 	}
 
 	@Override
+	public String getUrl() {
+		return this.url;
+	}
+
+	@Override
 	public void connect() {
 		try {
 			urlConnection = (HttpURLConnection) new URL(url).openConnection();
@@ -41,7 +46,7 @@ public class HttpTransportClient implements TransportClient {
 			urlConnection.setReadTimeout(Constants.NETWORK_SESSION_TIME_TIMEOUT_MS);
 			urlConnection.connect();
 			isConnected = true;
-			log.info("client connect to {} successfully",url);
+			log.info("client connect to {} successfully", url);
 		} catch (Exception e) {
 			//throw new IllegalStateException("try to connect to  fail",url);
 		}

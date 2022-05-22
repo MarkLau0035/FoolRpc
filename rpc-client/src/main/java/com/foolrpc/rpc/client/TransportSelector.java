@@ -1,5 +1,6 @@
 package com.foolrpc.rpc.client;
 
+import com.foolrpc.rpc.registry.zookeeper.NotifyTarget;
 import com.foolrpc.rpc.transport.TransportClient;
 
 import java.util.List;
@@ -10,15 +11,15 @@ import java.util.List;
  * @author luolinyuan
  * @date 2022/3/30
  **/
-public interface TransportSelector {
+public interface TransportSelector extends NotifyTarget {
 
 
 	/**
 	 * 初始化selector
 	 *
-	 * @param clients 网络客户端
-	  **/
-	void init(List<TransportClient> clients);
+	 * @param urls 网络客户端
+	 **/
+	void init(List<String> urls);
 
 	/**
 	 * 选取一个TransportClient
