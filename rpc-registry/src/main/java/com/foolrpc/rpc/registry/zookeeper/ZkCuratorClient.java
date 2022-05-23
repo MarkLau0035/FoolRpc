@@ -11,6 +11,7 @@ import org.apache.curator.framework.recipes.cache.CuratorCacheListener;
 import org.apache.curator.retry.RetryNTimes;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
+import org.apache.zookeeper.client.ZKClientConfig;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -36,7 +37,7 @@ public class ZkCuratorClient {
 
 	private final Map<String, CuratorCache> nodeCacheMap = new ConcurrentHashMap<>();
 
-	private CuratorFramework client;
+	private final CuratorFramework client;
 
 	private static final Charset CHARSET = Constants.CHARSET;
 
@@ -49,8 +50,10 @@ public class ZkCuratorClient {
 		RetryPolicy retryPolicy = new RetryNTimes(config.getMaxRetryTimes(), config.getBaseSleepTimeMs());
 
 		StringJoiner joiner = new StringJoiner(",");
-
-		for (String zkPeer : config.getPeers()) {
+		List<String> peers = config.getPeers();
+		ZKClientConfig zkConfig = new ZKClientConfig();
+		zkConfig.setProperty(ZKClientConfig.ZOOKEEPER_SERVER_PRINCIPAL, peers.get(0));
+		for (String zkPeer : peers) {
 			joiner.add(zkPeer);
 		}
 		try {
@@ -60,6 +63,7 @@ public class ZkCuratorClient {
 					.retryPolicy(retryPolicy)
 					.namespace(config.getNamespace())
 					.connectionTimeoutMs(config.getConnectionTimeout())
+					.zookeeperFactory(new WithConfigZookeeperFactory(zkConfig))
 					.build();
 			client.start();
 			boolean connected = client.blockUntilConnected(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
