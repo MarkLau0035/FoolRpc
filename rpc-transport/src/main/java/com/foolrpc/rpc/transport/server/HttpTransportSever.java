@@ -1,7 +1,8 @@
-package com.foolrpc.rpc.transport.impl;
+package com.foolrpc.rpc.transport.server;
 
 import com.foolrpc.rpc.transport.RequestHandler;
 import com.foolrpc.rpc.transport.TransportServer;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -62,13 +63,14 @@ public class HttpTransportSever implements TransportServer {
 	}
 
 	class RequestServlet extends HttpServlet {
+		@SneakyThrows
 		@Override
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 			ServletInputStream inputStream = req.getInputStream();
 			OutputStream outputStream = resp.getOutputStream();
 
 			if (handler != null) {
-				handler.onRequestSteam(inputStream, outputStream);
+				handler.onRequestStream(inputStream, outputStream);
 			}
 		}
 	}

@@ -14,6 +14,7 @@ public interface RequestHandler {
 	 *
 	 * @param receive    接收字节流
 	 * @param toResponse 输出字节流
+	 * @throws Exception
 	 **/
-	void onRequestSteam(InputStream receive, OutputStream toResponse);
+	void onRequestStream(InputStream receive, OutputStream toResponse) throws Exception;
 }
