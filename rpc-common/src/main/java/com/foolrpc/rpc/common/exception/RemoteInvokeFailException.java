@@ -8,6 +8,6 @@ package com.foolrpc.rpc.common.exception;
  **/
 public class RemoteInvokeFailException extends IllegalStateException {
 	public RemoteInvokeFailException(String method, String message) {
-		super("fail to invoke " + method + " details: " + method);
+		super("fail to invoke " + method + " details: " + message);
 	}
 }

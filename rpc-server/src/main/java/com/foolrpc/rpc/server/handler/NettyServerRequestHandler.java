@@ -12,8 +12,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
+
 
 /**
  * @author guokun
@@ -107,13 +109,5 @@ public class NettyServerRequestHandler extends ChannelInboundHandlerAdapter impl
             }
         }
         ctx.fireChannelRead(msg);
-    }
-
-    public static void main(String[] args) {
-        NettyTransportServer nettyTransportServer = new NettyTransportServer();
-        nettyTransportServer.init(8080,new NettyServerRequestHandler());
-        nettyTransportServer.start();
-
-//        nettyTransportServer.stop();
     }
 }
