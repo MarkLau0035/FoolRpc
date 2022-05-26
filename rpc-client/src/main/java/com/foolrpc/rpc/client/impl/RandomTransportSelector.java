@@ -3,7 +3,7 @@ package com.foolrpc.rpc.client.impl;
 import com.foolrpc.rpc.client.TransportSelector;
 import com.foolrpc.rpc.common.exception.NoAvailableServiceException;
 import com.foolrpc.rpc.transport.TransportClient;
-import com.foolrpc.rpc.transport.impl.HttpTransportClient;
+import com.foolrpc.rpc.transport.client.HttpTransportClient;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
