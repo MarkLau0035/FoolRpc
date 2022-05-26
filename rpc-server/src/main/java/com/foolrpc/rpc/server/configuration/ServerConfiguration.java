@@ -1,7 +1,7 @@
 package com.foolrpc.rpc.server.configuration;
 
 import com.foolrpc.rpc.transport.TransportServer;
-import com.foolrpc.rpc.transport.impl.HttpTransportSever;
+import com.foolrpc.rpc.transport.server.NettyTransportServer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +15,6 @@ import org.springframework.context.annotation.Configuration;
 public class ServerConfiguration {
 	@Bean
 	public TransportServer transportServer() {
-		return new HttpTransportSever();
+		return new NettyTransportServer();
 	}
 }

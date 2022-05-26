@@ -1,10 +1,11 @@
-package com.foolrpc.rpc.server.impl;
+package com.foolrpc.rpc.server.handler;
 
 import com.foolrpc.rpc.protocol.util.ProtoUtils;
 import com.foolrpc.rpc.protocol.Request;
 import com.foolrpc.rpc.protocol.Response;
 import com.foolrpc.rpc.common.bean.ServiceInstance;
 import com.foolrpc.rpc.registry.service.ServiceManager;
+import com.foolrpc.rpc.server.impl.ServiceInvoker;
 import com.foolrpc.rpc.transport.RequestHandler;
 import com.google.protobuf.ByteString;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ import java.util.List;
  * @date 2022/4/28
  **/
 @Slf4j
-@Component
+@Component("requestHandlerImpl")
 public class RequestHandlerImpl implements RequestHandler {
 	private ServiceManager serviceManager;
 
@@ -41,7 +42,7 @@ public class RequestHandlerImpl implements RequestHandler {
 	}
 
 	@Override
-	public void onRequestSteam(InputStream receive, OutputStream toResponse) {
+	public void onRequestStream(InputStream receive, OutputStream toResponse) {
 
 		Response resp = null;
 		Request request;
