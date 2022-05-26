@@ -1,7 +1,7 @@
 package com.foolrpc.rpc.registry.service.impl;
 
 import com.foolrpc.rpc.common.bean.ServiceInstance;
-import com.foolrpc.rpc.common.exception.DoNotExistServerException;
+import com.foolrpc.rpc.common.exception.NoAvailableServiceException;
 import com.foolrpc.rpc.registry.service.ServiceManager;
 import com.foolrpc.rpc.registry.zookeeper.ZkCuratorClient;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +56,7 @@ public class ServiceManagerImpl implements ServiceManager {
 	public ServiceInstance lookup(String descriptor) {
 		ServiceInstance instance = serverCaches.get(descriptor);
 		if (instance == null) {
-			throw new DoNotExistServerException(descriptor.substring(0, descriptor.indexOf("\n")));
+			throw new NoAvailableServiceException(descriptor.substring(0, descriptor.indexOf("\n")));
 		}
 		return instance;
 	}

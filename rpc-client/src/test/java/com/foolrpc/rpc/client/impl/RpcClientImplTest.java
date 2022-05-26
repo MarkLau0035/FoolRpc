@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import stub.Calculator;
 import org.junit.Test;
+import stub.Calculator;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +21,6 @@ public class RpcClientImplTest {
 
 
 	@Test
-	@Ignore
 	public void TestInvoke() {
 		/*测试整型加法的调用*/
 		Calculator calculator = rpcClient.getProxy(Calculator.class);

@@ -33,6 +33,7 @@ public class ProtoUtils {
 		Request.Builder requestBuilder = Request.newBuilder();
 
 
+
 		if (args.length != 0) {
 			for (Object arg : args) {
 				try {
@@ -44,6 +45,7 @@ public class ProtoUtils {
 		}
 
 		requestBuilder.setServiceDescriptor(generateServiceDescriptor(clazz, method));
+
 		return requestBuilder.build();
 	}
 
