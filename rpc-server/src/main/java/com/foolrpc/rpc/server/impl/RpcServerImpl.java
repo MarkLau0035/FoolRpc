@@ -12,6 +12,7 @@ import com.foolrpc.rpc.transport.RequestHandler;
 import com.foolrpc.rpc.transport.TransportServer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +57,7 @@ public class RpcServerImpl implements RpcServer {
 	}
 
 	@Autowired
+	@Qualifier("nettyServerRequestHandler")
 	public void setHandler(RequestHandler handler) {
 		this.handler = handler;
 	}

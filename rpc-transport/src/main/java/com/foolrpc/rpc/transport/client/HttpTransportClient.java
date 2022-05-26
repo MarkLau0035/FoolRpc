@@ -1,4 +1,4 @@
-package com.foolrpc.rpc.transport.impl;
+package com.foolrpc.rpc.transport.client;
 
 import com.foolrpc.rpc.common.constants.Constants;
 import com.foolrpc.rpc.transport.TransportClient;
@@ -14,8 +14,8 @@ import java.net.URL;
 /**
  * Http客户端
  *
- * @author luolinyuan
- * @date 2022/3/29
+ * @author guokun
+ * @date 2022/5/20
  **/
 @Slf4j
 public class HttpTransportClient implements TransportClient {
