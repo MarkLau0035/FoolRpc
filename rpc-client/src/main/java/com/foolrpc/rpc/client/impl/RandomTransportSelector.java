@@ -46,6 +46,7 @@ public class RandomTransportSelector implements TransportSelector {
 
 	@Override
 	public synchronized void release(TransportClient client) {
+		client.close();
 		clients.put(client.getUrl(), client);
 	}
 
